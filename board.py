@@ -353,7 +353,7 @@ class Board(object):
 
         # Filename for Last xx Posts Page.
         abbreviated_filename = os.path.join(self.path,
-            self.options['RES_DIR'], 
+            self.options['RES_DIR'],
             "%s_abbr%s" % (threadid, config.PAGE_EXT))
 
         if config.ENABLE_ABBREVIATED_THREAD_PAGES and posts_to_trim > 1:
@@ -828,7 +828,7 @@ class Board(object):
                                           relative_thumb_path)
         full_backup_path = os.path.join(backup_base,
                                         os.path.basename(relative_file_path))
-        full_tbackup_path = os.path.join(backup_base, 
+        full_tbackup_path = os.path.join(backup_base,
                                          os.path.basename(relative_thumb_path))
 
         if os.path.isfile(full_file_path):
@@ -1261,7 +1261,7 @@ class Board(object):
                 os.rename(filename,
                           newfilename.encode(sys.getfilesystemencoding()))
                 if thumbnail == filename:
-                    thumbnail = newfilename 
+                    thumbnail = newfilename
                 filename = newfilename
             else:
                 os.unlink(filename)
@@ -1489,8 +1489,10 @@ class Board(object):
             sql = model.proxy.insert().values(ip=ip,
                 timestamp=timestamp, date=date)
 
+            sys.stderr.write("desu PROXY_COMMAND retval for ip: %s, %s\n" % (ip, retval))
             retval_blacklist = self.options.get('PROXY_RETVAL_BLACKLIST', 100)
-            if retval == retval_blacklist:
+            # So os.system is returning 25600 now... fucking what?!?!
+            if retval in [retval_blacklist, 25600, '25600']:
                 session.execute(sql.values(type='black'))
                 raise WakaError(strings.PROXY, plain=True)
             else:
